@@ -3,7 +3,7 @@ import Engine from '../canvas-studio/engine/engine'
 import Entity from '../canvas-studio/engine/entity/entity'
 import Size from '../canvas-studio/engine/math/size'
 import Vector2D from '../canvas-studio/engine/math/vector-2d'
-import { useEngine } from '../canvas-studio/useEngine'
+import { useEngine } from '../canvas-studio/use-engine'
 
 export const createProtoglyphEntity = (id: number): Entity => {
   const entity = new Entity(id)

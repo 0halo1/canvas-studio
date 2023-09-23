@@ -1,5 +1,5 @@
-import Engine from './engine'
-import Entity from './entity/entity'
+import Engine from './engine/engine'
+import Entity from './engine/entity/entity'
 import { PartialKeys } from './utils/partial-keys'
 
 export interface EngineOptions extends PartialKeys<EngineLoopOptions, 'fps'>, PartialKeys<EngineCoreOptions, 'createEngine'> {

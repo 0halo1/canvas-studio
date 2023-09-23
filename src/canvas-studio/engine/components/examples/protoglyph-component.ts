@@ -18,10 +18,13 @@ class ProtogylphComponent extends AnimatedDrawableComponent {
   intensity: number = 5000
   radius: number = 0
   noiseScale: number = 0.05
+  perlin: PerlinNoise3D
 
   constructor(position: Vector2D, size: Size) {
     super(position, size)
     this.radius = this.size.width / this.scale / 2
+    this.perlin = new PerlinNoise3D()
+    this.perlin.noiseSeed(Math.random() * 1000)
   }
 
   draw(ctx: DrawAlgorithmContext): void {
@@ -31,11 +34,9 @@ class ProtogylphComponent extends AnimatedDrawableComponent {
     ctx.fillStyle = 'white'
     rect(ctx, 0, 0, width, height)
 
-    const perlin: PerlinNoise3D = new PerlinNoise3D()
-
     for (let y = -this.radius; y < this.radius; y++) {
       for (let x = -this.radius; x < this.radius; x++) {
-        const random = perlin.get(
+        const random = this.perlin.get(
           (x / this.radius) * this.noiseScale,
           (y / this.radius) * this.noiseScale,
           mag(x, y) / this.radius - this.amplitude
@@ -51,7 +52,7 @@ class ProtogylphComponent extends AnimatedDrawableComponent {
   }
 
   update(deltaTime: number): void {
-    this.amplitude += 0.1
+    // this.amplitude += 0.1
   }
 }
 
