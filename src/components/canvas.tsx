@@ -15,8 +15,8 @@ export const App = () => {
   const engine = useEngine({
     options: {
       id: 'canvas-studio',
-      debugLoop: true,
-      debugEngine: true,
+      debugLoop: false,
+      debugEngine: false,
       width: 400,
       height: 400,
       entities: [createKGridEntity(0)],
