@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import { useEngineLoop } from './use-engine-loop'
 import { EngineOptions, EngineOptionsResolved } from './types'
 import Engine from './engine/engine'
 
@@ -15,8 +14,6 @@ export const useEngine = ({ options }: { options: EngineOptions }) => {
   const resolvedOptions: EngineOptionsResolved = {
     // Add defaults here.
     entities: options.entities || [],
-    fps: options.fps || 24,
-    debugLoop: options.debugLoop || false,
     debugEngine: options.debugEngine || false,
     createEngine: options.createEngine || ((width: number, height: number, id: string) => new Engine(width, height, id)),
     ...options,
@@ -43,12 +40,10 @@ export const useEngine = ({ options }: { options: EngineOptions }) => {
     }
   }, [])
 
-  // Compose the engine loop into the engine
-  useEngineLoop({
-    engine: engineRef.current,
-    fps: resolvedOptions.fps,
-    debug: resolvedOptions.debugLoop,
-  })
+  useEffect(() => {
+    if (!engineRef.current) return
+    engineRef.current.render()
+  }, [engineRef.current])
 
   return engineRef.current
 }

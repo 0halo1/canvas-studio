@@ -2,15 +2,13 @@ import Engine from './engine/engine'
 import Entity from './engine/entity/entity'
 import { PartialKeys } from './utils/partial-keys'
 
-export interface EngineOptions extends PartialKeys<EngineLoopOptions, 'fps'>, PartialKeys<EngineCoreOptions, 'createEngine'> {
+export interface EngineOptions extends PartialKeys<EngineCoreOptions, 'createEngine'> {
   entities?: Entity[]
-  debugLoop?: boolean
   debugEngine?: boolean
 }
 
-export interface EngineOptionsResolved extends EngineLoopOptions, EngineCoreOptions {
+export interface EngineOptionsResolved extends EngineCoreOptions {
   entities: Entity[]
-  debugLoop: boolean
   debugEngine: boolean
 }
 
@@ -19,8 +17,4 @@ export interface EngineCoreOptions {
   width: number
   height: number
   createEngine: (width: number, height: number, id: string) => Engine
-}
-
-export interface EngineLoopOptions {
-  fps: number
 }

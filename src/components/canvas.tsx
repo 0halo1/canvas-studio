@@ -14,8 +14,9 @@ export const createKGridEntity = (id: number): Entity => {
 export const App = () => {
   const engine = useEngine({
     options: {
-      id: 'canvas-studio',
+      id: 'canvas-studio-0',
       debugLoop: false,
+      animate: false,
       debugEngine: false,
       width: 400,
       height: 400,
@@ -26,9 +27,10 @@ export const App = () => {
 
   return (
     <div className='bg-background min-h-screen'>
-      <div className='p-md h-screen flex items-center justify-center border border-accents_7 rounded-tertiary'>
-        <canvas id='canvas-studio' width={400} height={400} className='border border-border' />
-        <canvas id='canvas-studio' width={400} height={400} className='border border-border' />
+      <div className='p-md h-screen grid grid-cols-4 items-center justify-center border border-accents_7 rounded-tertiary'>
+        {[...Array(8)].map((_, i) => (
+          <canvas id={`canvas-studio-${i}`} width={400} height={400} className='border border-border' />
+        ))}
       </div>
     </div>
   )
