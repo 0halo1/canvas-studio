@@ -1,5 +1,6 @@
-import { point } from '../../../canvas/geometry/point'
-import { rect } from '../../../canvas/geometry/rect'
+import { fill } from '../../../canvas/core/fill'
+import { point } from '../../../canvas/core/point'
+import { rect } from '../../../canvas/core/rect'
 import { DrawAlgorithmContext } from '../../../canvas/interfaces'
 import { mag } from '../../../canvas/math/mag'
 import PerlinNoise3D from '../../../canvas/math/perlin-noise'
@@ -31,7 +32,7 @@ class ProtogylphComponent extends AnimatedDrawableComponent {
     const width = this.size.width
     const height = this.size.height
 
-    ctx.fillStyle = 'white'
+    fill(ctx, 'white')
     rect(ctx, 0, 0, width, height)
 
     for (let y = -this.radius; y < this.radius; y++) {
@@ -44,7 +45,7 @@ class ProtogylphComponent extends AnimatedDrawableComponent {
 
         const mod = Math.floor(Math.abs(random - 0.5) * this.intensity)
         if (mod % 2 == 0) {
-          ctx.fillStyle = 'black'
+          fill(ctx, 'black')
           point(ctx, x + this.radius, y + this.radius)
         }
       }
