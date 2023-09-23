@@ -16,5 +16,6 @@ export interface EngineCoreOptions {
   id: string
   width: number
   height: number
+  iterations: number
   createEngine: (width: number, height: number, id: string) => Engine
 }

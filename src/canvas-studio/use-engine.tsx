@@ -42,8 +42,23 @@ export const useEngine = ({ options }: { options: EngineOptions }) => {
 
   useEffect(() => {
     if (!engineRef.current) return
-    engineRef.current.render()
+
+    // For each iteration, render the engine and update the image, hence, we get new images for each iteration.
+    for (let i = 0; i < resolvedOptions.iterations; i++) {
+      if (resolvedOptions.debugEngine) {
+        console.log(`Rendering iteration ${i + 1}`)
+      }
+
+      // Render the engine
+      engineRef.current.render()
+
+      // Update the image
+      const img = document.getElementById(`${resolvedOptions.id}-img-${i}`) as HTMLImageElement
+      if (img) {
+        img.src = engineRef.current.getClientCanvas().getCanvas().toDataURL()
+      }
+    }
   }, [engineRef.current])
 
-  return engineRef.current
+  return { ref: engineRef.current }
 }

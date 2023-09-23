@@ -12,13 +12,12 @@ export const createKGridEntity = (id: number): Entity => {
 }
 
 export const App = () => {
-  const engine = useEngine({
+  useEngine({
     options: {
-      id: 'canvas-studio-0',
-      debugLoop: false,
-      animate: false,
-      debugEngine: false,
+      id: 'canvas-studio',
+      debugEngine: true,
       width: 400,
+      iterations: 5,
       height: 400,
       entities: [createKGridEntity(0)],
       createEngine: (width: number, height: number, id: string) => new Engine(width, height, id),
@@ -27,11 +26,18 @@ export const App = () => {
 
   return (
     <div className='bg-background min-h-screen'>
-      <div className='p-md h-screen grid grid-cols-4 items-center justify-center border border-accents_7 rounded-tertiary'>
-        {[...Array(8)].map((_, i) => (
-          <canvas id={`canvas-studio-${i}`} width={400} height={400} className='border border-border' />
+      <div className='p-md grid grid-cols-4 items-center justify-center border border-accents_7 rounded-tertiary'>
+        {[...Array(5)].map((_, i) => (
+          <img
+            key={`canvas-studio-img-${i}`}
+            id={`canvas-studio-img-${i}`}
+            className='border border-accents_7 rounded-tertiary'
+            width={400}
+            height={400}
+          />
         ))}
       </div>
+      <canvas id={`canvas-studio`} width={400} height={400} className='border border-border hidden' />
     </div>
   )
 }
