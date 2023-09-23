@@ -4,14 +4,18 @@
   "description": "[beta] A framework for generating long-form generative art in Javascript",
   "main": "index.js",
   "scripts": {
-    "build": "tsup src/index.ts"
+    "dev": "vite"
   },
   "license": "MIT",
   "devDependencies": {
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "vite": "^4.4.8",
+    "typescript": "^5.2.2",
+    "@vitejs/plugin-react": "^4.0.4"
   },
   "dependencies": {
-    "@changesets/cli": "^2.26.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
