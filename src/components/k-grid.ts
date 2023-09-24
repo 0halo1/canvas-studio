@@ -1,35 +1,84 @@
+import { background } from '../canvas-studio/canvas/core/background'
 import { fill } from '../canvas-studio/canvas/core/fill'
-import { line } from '../canvas-studio/canvas/core/point'
-import { rect } from '../canvas-studio/canvas/core/rect'
+import { line } from '../canvas-studio/canvas/core/line'
 import { stroke } from '../canvas-studio/canvas/core/stroke'
 import { strokeWeight } from '../canvas-studio/canvas/core/strokeWeight'
 import { DrawAlgorithmContext } from '../canvas-studio/canvas/interfaces'
-import { dist } from '../canvas-studio/canvas/math/dist'
-import { lerp } from '../canvas-studio/canvas/math/lerp'
+import { random } from '../canvas-studio/canvas/math/random'
 import AnimatedDrawableComponent from '../canvas-studio/engine/components/animated-drawable-component'
 import Size from '../canvas-studio/engine/math/size'
 import Vector2D from '../canvas-studio/engine/math/vector-2d'
 
+type ColorPalette = string[]
+
 export class KGrid extends AnimatedDrawableComponent {
-  columns: number = 15
-  rows: number = 15
-  lineSpacing: number = 30
-  cellSize: number
-  currentPalette: string[] = ['#FF6138', '#FFFF9D', '#BEEB9F', '#79BD8F', '#00A388']
+  private readonly PALETTE_1: ColorPalette = ['#053B50', '#176B87', '#64CCC5', '#EEEEEE']
+  private readonly PALETTE_2: ColorPalette = ['#C06C84', '#355C7D', '#F67280']
+  private readonly PALETTE_3: ColorPalette = ['#00B8A9', '#F6416C', '#FFDE7D', '#F8F3D4']
+  // private readonly PALLETE_4: ColorPalette = ['#000', '#FFF']
+
+  private currentPalette!: ColorPalette
+  private cellSize!: number
+  private rows!: number
+  private columns!: number
+  private strokeSize!: number
+  private cubeDrawnBoolean!: boolean[][]
+  private visited!: boolean[][]
+  private groups!: { col: number; row: number }[][]
+  private cubeOccurance!: number
+  private lineSpacing!: number
 
   constructor(position: Vector2D, size: Size) {
     super(position, size)
-    this.cellSize = size.width / this.columns
   }
 
-  draw(ctx: DrawAlgorithmContext): void {
-    // Draw the background
-    fill(ctx, 'white')
-    rect(ctx, 0, 0, this.size.width, this.size.height)
+  private init(): void {
+    this.cellSize = Math.floor(random(2, 9)) * 5
+    const rnd = Math.floor(this.size.width / this.cellSize)
+    this.rows = rnd
+    this.columns = rnd
+    this.strokeSize = Math.ceil(this.cellSize / Math.ceil(random(12, 16)))
+    this.cubeDrawnBoolean = Array(this.columns)
+      .fill(null)
+      .map(() => Array(this.rows).fill(false))
+    this.visited = Array(this.columns)
+      .fill(null)
+      .map(() => Array(this.rows).fill(false))
+    this.groups = []
+    this.cubeOccurance = 0.5
+    this.lineSpacing = this.cellSize / Math.floor(random(1, 5))
+    this.currentPalette = random([this.PALETTE_1, this.PALETTE_2, this.PALETTE_3])
+  }
 
+  draw(ctx: CanvasRenderingContext2D): void {
+    this.init()
+    background(ctx, this.getBackgroundColor())
+    this.createCubes()
+    this.removeChildlessCubes()
+    this.groupByConnectedCubes()
+
+    for (let group of this.groups) {
+      for (let cube of group) {
+        this.fillCube(ctx, cube.col, cube.row)
+      }
+    }
+
+    // Uncomment if needed
+    // if (Math.random() > 0.5) {
+    //     this.createLines();
+    // }
+  }
+
+  private groupByConnectedCubes() {
     for (let col = 0; col < this.columns; col++) {
       for (let row = 0; row < this.rows; row++) {
-        this.fillCube(ctx, col, row)
+        if (!this.visited[col][row] && this.cubeDrawnBoolean[col][row]) {
+          let currentGroup: { col: number; row: number }[] = []
+          this.dfs(col, row, currentGroup)
+          if (currentGroup.length > 0) {
+            this.groups.push(currentGroup)
+          }
+        }
       }
     }
   }
@@ -46,6 +95,10 @@ export class KGrid extends AnimatedDrawableComponent {
     let color = this.currentPalette[index]
 
     return color
+  }
+
+  getBackgroundColor() {
+    return this.currentPalette[this.currentPalette.length - 1] || '#000'
   }
 
   fillDiagonalLines1(ctx: DrawAlgorithmContext, x: number, y: number, weight = 2) {
@@ -87,22 +140,75 @@ export class KGrid extends AnimatedDrawableComponent {
     let x = startX + col * this.cellSize
     let y = startY + row * this.cellSize
 
-    // 1. Calculate the distance of the center of the cube to the center of the canvas
-    let cubeCenterX = x + this.cellSize / 2
-    let cubeCenterY = y + this.cellSize / 2
-    let canvasCenterX = this.size.width / 2
-    let canvasCenterY = this.size.height / 2
-    let distToCenter = dist(cubeCenterX, cubeCenterY, canvasCenterX, canvasCenterY)
+    this.fillDiagonalLines1(ctx, x, y)
+  }
 
-    // 2. Normalize this distance
-    let maxDist = dist(0, 0, this.size.width / 2, this.size.height / 2) // maximum distance (corner to center)
-    let normalizedDist = distToCenter / maxDist
+  createCubes() {
+    for (let col = 0; col < this.columns; col++) {
+      for (let row = 0; row < this.rows; row++) {
+        if (this.cubeOccurance === 1 || random(1) > this.cubeOccurance) {
+          this.cubeDrawnBoolean[col][row] = true
+        }
+      }
+    }
+  }
 
-    // 3. Calculate the strokeWeight based on this normalized distance
-    let minStroke = 0.25 // you can adjust this value to the desired minimum stroke weight
-    let maxStroke = 12 // you can adjust this value to the desired maximum stroke weight
-    let currentStroke = lerp(maxStroke, minStroke, normalizedDist) // lerp is used to interpolate between two numbers
+  removeChildlessCubes() {
+    let toBeRemoved = []
 
-    this.fillDiagonalLines1(ctx, x, y, currentStroke)
+    for (let col = 0; col < this.columns; col++) {
+      for (let row = 0; row < this.rows; row++) {
+        if (this.cubeDrawnBoolean[col][row]) {
+          let hasNeighbor = false
+
+          // Check top neighbor
+          if (row > 0 && this.cubeDrawnBoolean[col][row - 1]) {
+            hasNeighbor = true
+          }
+
+          // Check bottom neighbor
+          if (row < this.rows - 1 && this.cubeDrawnBoolean[col][row + 1]) {
+            hasNeighbor = true
+          }
+
+          // Check left neighbor
+          if (col > 0 && this.cubeDrawnBoolean[col - 1][row]) {
+            hasNeighbor = true
+          }
+
+          // Check right neighbor
+          if (col < this.columns - 1 && this.cubeDrawnBoolean[col + 1][row]) {
+            hasNeighbor = true
+          }
+
+          // If the cube doesn't have any neighbors, mark it for removal
+          if (!hasNeighbor) {
+            toBeRemoved.push([col, row])
+          }
+        }
+      }
+    }
+
+    // Remove cubes that are marked for removal
+    toBeRemoved.forEach((coords) => {
+      this.cubeDrawnBoolean[coords[0]][coords[1]] = false
+    })
+  }
+
+  dfs(col: number, row: number, currentGroup: { col: number; row: number }[]) {
+    // Check out-of-boundary and if the cube is drawn
+    if (col < 0 || row < 0 || col >= this.columns || row >= this.rows || this.visited[col][row] || !this.cubeDrawnBoolean[col][row]) {
+      return
+    }
+
+    // Mark the cube as visited
+    this.visited[col][row] = true
+    currentGroup.push({ col, row })
+
+    // Visit all neighboring cubes
+    this.dfs(col - 1, row, currentGroup) // left
+    this.dfs(col + 1, row, currentGroup) // right
+    this.dfs(col, row - 1, currentGroup) // up
+    this.dfs(col, row + 1, currentGroup) // down
   }
 }

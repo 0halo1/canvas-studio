@@ -17,8 +17,8 @@ export const App = () => {
       id: 'canvas-studio',
       debugEngine: true,
       width: 400,
-      iterations: 5,
       height: 400,
+      iterations: 8,
       entities: [createKGridEntity(0)],
       createEngine: (width: number, height: number, id: string) => new Engine(width, height, id),
     },
@@ -27,7 +27,7 @@ export const App = () => {
   return (
     <div className='bg-background min-h-screen'>
       <div className='p-md grid grid-cols-4 items-center justify-center border border-accents_7 rounded-tertiary'>
-        {[...Array(5)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <img
             key={`canvas-studio-img-${i}`}
             id={`canvas-studio-img-${i}`}
@@ -37,7 +37,7 @@ export const App = () => {
           />
         ))}
       </div>
-      <canvas id={`canvas-studio`} width={400} height={400} className='border border-border hidden' />
+      {/* <canvas id={`canvas-studio`} width={400} height={400} className='border border-border hidden' /> */}
     </div>
   )
 }
