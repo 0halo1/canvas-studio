@@ -1,4 +1,4 @@
-import { DrawAlgorithmContext } from '../../canvas/interfaces'
+import { DrawAlgorithmContext } from '../../gl/interfaces'
 import type Component from '../components'
 
 /**

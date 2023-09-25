@@ -1,5 +1,5 @@
 import type Component from '.'
-import { DrawAlgorithmContext } from '../../canvas/interfaces'
+import { DrawAlgorithmContext } from '../../gl/interfaces'
 import type Size from '../math/size'
 import type Vector2D from '../math/vector-2d'
 

@@ -1,4 +1,4 @@
-import { DrawAlgorithmContext } from '../../canvas/interfaces'
+import { DrawAlgorithmContext } from '../../gl/interfaces'
 
 /**
  * In a game using an Entity-Component-System (ECS) architecture, the components you need
