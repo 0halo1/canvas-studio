@@ -15,7 +15,6 @@ export class KGrid extends AnimatedDrawableComponent {
   private readonly PALETTE_1: ColorPalette = ['#053B50', '#176B87', '#64CCC5', '#EEEEEE']
   private readonly PALETTE_2: ColorPalette = ['#C06C84', '#355C7D', '#F67280']
   private readonly PALETTE_3: ColorPalette = ['#00B8A9', '#F6416C', '#FFDE7D', '#F8F3D4']
-  // private readonly PALLETE_4: ColorPalette = ['#000', '#FFF']
 
   private currentPalette!: ColorPalette
   private cellSize!: number
