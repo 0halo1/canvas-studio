@@ -1,9 +1,7 @@
 // canvas-studio/canvas-renderer.tsx
 
 import { useEffect, useState } from 'react'
-
 import { getCanvas, getCanvasContext, initCanvas } from './utils'
-import Entity from '../engine/entity/entity'
 
 type CanvasRendererOptions = {
   id: string
@@ -11,7 +9,10 @@ type CanvasRendererOptions = {
   width: number
   height: number
   iterations: number
-  entity: Entity
+  render: {
+    draw: (ctx: CanvasRenderingContext2D, width: number, height: number) => void
+    setup: (ctx: CanvasRenderingContext2D, width: number, height: number) => void
+  }
 }
 
 export const CanvasRenderer = ({ options, className }: { className: string; options: CanvasRendererOptions }) => {
@@ -20,7 +21,7 @@ export const CanvasRenderer = ({ options, className }: { className: string; opti
   const [height] = useState(options.height)
   const [debugEngine] = useState(options.debugEngine)
   const [iterations] = useState(options.iterations)
-  const [entity] = useState(options.entity)
+  const [render] = useState(options.render)
 
   useEffect(() => {
     try {
@@ -42,7 +43,8 @@ export const CanvasRenderer = ({ options, className }: { className: string; opti
         }
 
         // Render the engine
-        entity.draw(getCanvasContext(id))
+        render.setup(getCanvasContext(id), width, height)
+        render.draw(getCanvasContext(id), width, height)
 
         // Update the image
         const img = document.getElementById(`${id}-img-${i}`) as HTMLImageElement
