@@ -1,5 +1,5 @@
 import { CanvasRenderer } from '../canvas-studio/renderer'
-import { render } from './k-grid.minimal'
+import { render } from './k-grid'
 
 const constants = {
   canvasWidth: 400,
