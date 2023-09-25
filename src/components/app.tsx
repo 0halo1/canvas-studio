@@ -1,4 +1,5 @@
 import { CanvasRenderer } from '../canvas-studio/renderer'
+import { env } from '../env.js'
 
 const constants = {
   canvasWidth: 400,
@@ -17,7 +18,7 @@ export const App = () => {
           width: constants.canvasWidth,
           height: constants.canvasHeight,
           iterations: constants.iterations,
-          filePath: `/Users/halo/Documents/Repository/@0halo1/canvas-studio/src/components/k-grid.ts`,
+          filePath: env.PUBLIC_RENDER_FILE_PATH,
         }}
         className='p-md grid grid-cols-4 items-center justify-center border border-accents_7 rounded-tertiary'
       />
